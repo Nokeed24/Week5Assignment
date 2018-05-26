@@ -19,13 +19,13 @@ const defaultBoard = [
     ['o', 'o', 'o'],
     ['o', 'o', 'o']
 ];
+const colors = ["red", "blue", "green", "yellow", "magenta"];
 const moves = (board1, board2) => board1
     .map((row, y) => row.filter((cell, x) => board2[y][x] !== cell))
     .reduce((a, b) => a.concat(b))
     .length;
 let GameController = class GameController {
     assignRandomColor() {
-        const colors = ["red", "blue", "green", "yellow", "magenta"];
         return colors[Math.floor(Math.random() * colors.length)];
     }
     async allGames() {
@@ -33,26 +33,30 @@ let GameController = class GameController {
         return { games };
     }
     async comparetwogames() {
-        const game2 = await entity_1.default.findOne(25);
+        const game2 = await entity_1.default.findOne(54);
         const board2 = game2.board;
         return { moves: moves(defaultBoard, board2) };
     }
     createGame(game) {
+        if (!game.name)
+            throw new routing_controllers_1.NotFoundError("Cannot create game");
         game.color = this.assignRandomColor();
         return game.save();
     }
     async updateGame(id, update) {
         const game = await entity_1.default.findOne(id);
+        if (!game)
+            throw new routing_controllers_1.NotFoundError('Cannot find game');
         const currentBoard = game.board;
         if (update.id)
             throw new routing_controllers_1.ForbiddenError('Cannot change the id');
+        if (update.color && !colors.includes(update.color))
+            throw new routing_controllers_1.ForbiddenError('Color not permitted');
         if (update.board) {
             if (moves(currentBoard, update.board) > 1) {
-                throw new routing_controllers_1.BadRequestError("404 Bad request");
+                throw new routing_controllers_1.BadRequestError("Too many moves, dawg");
             }
         }
-        if (!game)
-            throw new routing_controllers_1.NotFoundError('Cannot find game');
         return entity_1.default.merge(game, update).save();
     }
 };

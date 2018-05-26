@@ -2,8 +2,6 @@
 import { JsonController, Get, Post, Put, Body, Param, HttpCode, NotFoundError, ForbiddenError, BadRequestError } from 'routing-controllers'
 import Game from './entity'
 
-type GameList = { games: Game[] }
-
 const defaultBoard = [
     ['o', 'o', 'o'],
     ['o', 'o', 'o'],
@@ -36,7 +34,7 @@ export default class GameController {
 
     @Get('/games/1v2')
     async comparetwogames() {
-        const game2 = await Game.findOne(40)
+        const game2 = await Game.findOne(54)
         const board2 = game2.board              //it complains because the game2 object "could" be undefined. In this case we are using async and await to make sure it's not
         return {moves: moves(defaultBoard,board2)}
     }
@@ -46,6 +44,7 @@ export default class GameController {
     createGame(
         @Body() game: Game
     ) {
+        if(!game.name) throw new NotFoundError("Cannot create game")
         game.color = this.assignRandomColor()
         return game.save()
     }
@@ -57,9 +56,9 @@ export default class GameController {
     ) {
         const game = await Game.findOne(id)
         if (!game) throw new NotFoundError('Cannot find game')
-        if(update.color && !colors.includes(update.color)) throw new ForbiddenError('Color not permitted')
         const currentBoard = game.board
         if (update.id) throw new ForbiddenError('Cannot change the id')
+        if (update.color && !colors.includes(update.color)) throw new ForbiddenError('Color not permitted')
         if (update.board) 
         {
             if(moves(currentBoard,update.board) > 1)

@@ -1,21 +1,19 @@
 // src/games/entity.ts
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 import { BaseEntity } from 'typeorm/repository/BaseEntity'
-import { IsString, IsIn, IsOptional } from 'class-validator'
-
-const colors = ["red", "blue", "green", "yellow", "magenta"]
+import { IsString, IsOptional } from 'class-validator'
 
 export type Row = [string, string, string]
 export type Board = [ Row, Row, Row]
 
-export type defaultBoard = [
+type defaultBoard = [
   ['o', 'o', 'o'],
   ['o', 'o', 'o'],
   ['o', 'o', 'o']
 ]
 
-const newRow: Row = ["o", "o", "o"]
-const newBoard: Board = [newRow, newRow, newRow]
+const newRow: Row = ['o', 'o', 'o']
+const newBoard = [newRow, newRow, newRow]
 
 @Entity()
 export default class Game extends BaseEntity {
@@ -33,5 +31,5 @@ export default class Game extends BaseEntity {
   color: string
 
   @Column('json', {default: newBoard})
-  board: Board
+  board: JSON
 }

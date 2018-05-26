@@ -34,7 +34,7 @@ export default class GameController {
     async comparetwogames() {
         //const game1 = await Game.findOne(18)
         //const board1 = game1.board
-        const game2 = await Game.findOne(21)
+        const game2 = await Game.findOne(22)
         const board2 = game2.board
         return {moves: moves(defaultBoard,board2)}
     }
@@ -58,7 +58,6 @@ export default class GameController {
         if (update.id) throw new ForbiddenError('Cannot change the id')
         if (update.board) 
         {
-            const game = await Game.findOne(id)
             if(moves(currentBoard,update.board) > 1)
             {
                 throw new Error("404 Bad request")

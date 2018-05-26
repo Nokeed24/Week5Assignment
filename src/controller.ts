@@ -4,7 +4,7 @@ import {Controller, Get} from 'routing-controllers'
 @Controller()
 export default class MainController {
 
-    @Get("/hello")
+    @Get("/games")
     main() {
        return {
          hello: 'World'

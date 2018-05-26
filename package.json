@@ -1,0 +1,24 @@
+{
+  "name": "WEEK-5-ASSIGNMENT",
+  "version": "1.0.0",
+  "main": "target/index.js",
+  "scripts": {
+    "watch": "node_modules/.bin/tsc -w",
+    "start": "node ."
+  },
+  "author": "Nokeed24 <nokid_gr@hotmail.it>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/koa": "^2.0.45",
+    "@types/koa-bodyparser": "^4.2.0",
+    "@types/koa-multer": "^1.0.0",
+    "@types/koa-router": "^7.0.28",
+    "@types/node": "^10.1.2",
+    "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-multer": "^1.0.2",
+    "koa-router": "^7.4.0",
+    "routing-controllers": "^0.7.7",
+    "typescript": "^2.8.3"
+  }
+}

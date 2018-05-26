@@ -19,6 +19,10 @@ const defaultBoard = [
     ['o', 'o', 'o'],
     ['o', 'o', 'o']
 ];
+const moves = (board1, board2) => board1
+    .map((row, y) => row.filter((cell, x) => board2[y][x] !== cell))
+    .reduce((a, b) => a.concat(b))
+    .length;
 let GameController = class GameController {
     assignRandomColor() {
         const colors = ["red", "blue", "green", "yellow", "magenta"];
@@ -28,24 +32,43 @@ let GameController = class GameController {
         const games = await entity_1.default.find();
         return { games };
     }
+    async comparetwogames() {
+        const game2 = await entity_1.default.findOne(21);
+        const board2 = game2.board;
+        return { moves: moves(defaultBoard, board2) };
+    }
     createGame(game) {
         game.color = this.assignRandomColor();
-        game.board = JSON.stringify(defaultBoard);
         return game.save();
     }
     async updateGame(id, update) {
         const game = await entity_1.default.findOne(id);
+        const currentBoard = game.board;
+        if (update.id)
+            throw new routing_controllers_1.ForbiddenError('Cannot change the id');
+        if (update.board) {
+            const game = await entity_1.default.findOne(id);
+            if (moves(currentBoard, update.board) > 1) {
+                throw new Error("404 Bad request");
+            }
+        }
         if (!game)
-            throw new routing_controllers_1.NotFoundError('Cannot find page');
+            throw new routing_controllers_1.NotFoundError('Cannot find game');
         return entity_1.default.merge(game, update).save();
     }
 };
 __decorate([
-    routing_controllers_1.Get('/games/'),
+    routing_controllers_1.Get('/games'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], GameController.prototype, "allGames", null);
+__decorate([
+    routing_controllers_1.Get('/games/1v2'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], GameController.prototype, "comparetwogames", null);
 __decorate([
     routing_controllers_1.Post('/games'),
     routing_controllers_1.HttpCode(201),

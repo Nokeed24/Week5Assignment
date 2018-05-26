@@ -1,13 +1,19 @@
-import { JsonController, Get, Post, Put, Body, Param, HttpCode, NotFoundError } from 'routing-controllers'
+import { JsonController, Get, Post, Put, Body, Param, HttpCode, NotFoundError, ForbiddenError } from 'routing-controllers'
 import Game from './entity'
 
-//type GameList = { games: Game[] }
+type GameList = { games: Game[] }
 
 const defaultBoard = [
     ['o', 'o', 'o'],
     ['o', 'o', 'o'],
     ['o', 'o', 'o']
 ]
+
+const moves = (board1, board2) => 
+  board1
+    .map((row, y) => row.filter((cell, x) => board2[y][x] !== cell))
+    .reduce((a, b) => a.concat(b))
+    .length
 
 @JsonController()
 export default class GameController {
@@ -18,10 +24,19 @@ export default class GameController {
         return colors[Math.floor(Math.random() * colors.length)];
     }
 
-    @Get('/games/')
+    @Get('/games')
     async allGames() {
         const games = await Game.find()
         return { games }
+    }
+
+    @Get('/games/1v2')
+    async comparetwogames() {
+        //const game1 = await Game.findOne(18)
+        //const board1 = game1.board
+        const game2 = await Game.findOne(21)
+        const board2 = game2.board
+        return {moves: moves(defaultBoard,board2)}
     }
 
     @Post('/games')
@@ -30,7 +45,6 @@ export default class GameController {
         @Body() game: Game
     ) {
         game.color = this.assignRandomColor()
-        game.board = JSON.stringify(defaultBoard)
         return game.save()
     }
 
@@ -40,7 +54,17 @@ export default class GameController {
         @Body() update: Partial<Game>
     ) {
         const game = await Game.findOne(id)
-        if (!game) throw new NotFoundError('Cannot find page')
+        const currentBoard = game.board
+        if (update.id) throw new ForbiddenError('Cannot change the id')
+        if (update.board) 
+        {
+            const game = await Game.findOne(id)
+            if(moves(currentBoard,update.board) > 1)
+            {
+                throw new Error("404 Bad request")
+            }
+        }
+        if (!game) throw new NotFoundError('Cannot find game')
         return Game.merge(game, update).save()
     }
 }

@@ -50,7 +50,7 @@ export default class GameController {
         if (!game) throw new NotFoundError('Cannot find game')
         const currentBoard = game.board
         if (update.id) throw new ForbiddenError('Cannot change the id')
-        if (update.color && !colors.includes(update.color)) throw new ForbiddenError('Color not permitted')
+        if (update.color && !colors.includes(update.color)) throw new BadRequestError('Color not permitted')
         if (update.board) 
         {
             if(moves(currentBoard,update.board) > 1)

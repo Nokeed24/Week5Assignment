@@ -41,7 +41,7 @@ let GameController = class GameController {
         if (update.id)
             throw new routing_controllers_1.ForbiddenError('Cannot change the id');
         if (update.color && !colors.includes(update.color))
-            throw new routing_controllers_1.ForbiddenError('Color not permitted');
+            throw new routing_controllers_1.BadRequestError('Color not permitted');
         if (update.board) {
             if (moves(currentBoard, update.board) > 1) {
                 throw new routing_controllers_1.BadRequestError("That's not allowed! Too many moves!");

@@ -10,18 +10,21 @@ const defaultBoard = [
     ['o', 'o', 'o']
 ]
 
+const colors = ["red", "blue", "green", "yellow", "magenta"]
+
 const moves = (board1, board2) => 
   board1
     .map((row, y) => row.filter((cell, x) => board2[y][x] !== cell))
     .reduce((a, b) => a.concat(b))
     .length
+    
 
 @JsonController()
 export default class GameController {
 
     
     assignRandomColor() {
-        const colors = ["red", "blue", "green", "yellow", "magenta"]
+        
         return colors[Math.floor(Math.random() * colors.length)];
     }
 
@@ -33,7 +36,7 @@ export default class GameController {
 
     @Get('/games/1v2')
     async comparetwogames() {
-        const game2 = await Game.findOne(25)
+        const game2 = await Game.findOne(40)
         const board2 = game2.board              //it complains because the game2 object "could" be undefined. In this case we are using async and await to make sure it's not
         return {moves: moves(defaultBoard,board2)}
     }
@@ -53,16 +56,17 @@ export default class GameController {
         @Body() update: Partial<Game>
     ) {
         const game = await Game.findOne(id)
+        if (!game) throw new NotFoundError('Cannot find game')
+        if(update.color && !colors.includes(update.color)) throw new ForbiddenError('Color not permitted')
         const currentBoard = game.board
         if (update.id) throw new ForbiddenError('Cannot change the id')
         if (update.board) 
         {
             if(moves(currentBoard,update.board) > 1)
             {
-                throw new BadRequestError("404 Bad request")
+                throw new BadRequestError("Too many moves, dawg")
             }
         }
-        if (!game) throw new NotFoundError('Cannot find game')
         return Game.merge(game, update).save()
     }
 }

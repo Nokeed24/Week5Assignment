@@ -15,7 +15,7 @@ export type defaultBoard = [
 ]
 
 const newRow: Row = ["o", "o", "o"]
-const newBoard: defaultBoard = [newRow, newRow, newRow]
+const newBoard: Board = [newRow, newRow, newRow]
 
 @Entity()
 export default class Game extends BaseEntity {
@@ -23,12 +23,12 @@ export default class Game extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
   
-  @IsString()
+  //@IsString()
   @Column('text', {nullable:false})
   name: string
 
   @IsString()
-  @IsIn(colors)
+  @IsOptional()
   @Column('text', {nullable:false})
   color: string
 

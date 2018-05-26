@@ -14,8 +14,7 @@ const moves = (board1, board2) =>
 @JsonController()
 export default class GameController {
 
-    assignRandomColor() {
-        
+    assignRandomColor() {        
         return colors[Math.floor(Math.random() * colors.length)];
     }
 

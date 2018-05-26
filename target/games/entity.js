@@ -14,6 +14,7 @@ const BaseEntity_1 = require("typeorm/repository/BaseEntity");
 const class_validator_1 = require("class-validator");
 const newRow = ['o', 'o', 'o'];
 const newBoard = [newRow, newRow, newRow];
+const colors = ["red", "blue", "green", "yellow", "magenta"];
 let Game = class Game extends BaseEntity_1.BaseEntity {
 };
 __decorate([
@@ -27,6 +28,7 @@ __decorate([
 ], Game.prototype, "name", void 0);
 __decorate([
     class_validator_1.IsString(),
+    class_validator_1.IsIn(colors),
     class_validator_1.IsOptional(),
     typeorm_1.Column('text', { nullable: false }),
     __metadata("design:type", String)

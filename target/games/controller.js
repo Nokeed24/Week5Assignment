@@ -33,7 +33,7 @@ let GameController = class GameController {
         return { games };
     }
     async comparetwogames() {
-        const game2 = await entity_1.default.findOne(22);
+        const game2 = await entity_1.default.findOne(25);
         const board2 = game2.board;
         return { moves: moves(defaultBoard, board2) };
     }
@@ -48,7 +48,7 @@ let GameController = class GameController {
             throw new routing_controllers_1.ForbiddenError('Cannot change the id');
         if (update.board) {
             if (moves(currentBoard, update.board) > 1) {
-                throw new Error("404 Bad request");
+                throw new routing_controllers_1.BadRequestError("404 Bad request");
             }
         }
         if (!game)

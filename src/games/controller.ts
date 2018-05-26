@@ -1,4 +1,5 @@
-import { JsonController, Get, Post, Put, Body, Param, HttpCode, NotFoundError, ForbiddenError } from 'routing-controllers'
+// src/games/controller.ts
+import { JsonController, Get, Post, Put, Body, Param, HttpCode, NotFoundError, ForbiddenError, BadRequestError } from 'routing-controllers'
 import Game from './entity'
 
 type GameList = { games: Game[] }
@@ -32,10 +33,8 @@ export default class GameController {
 
     @Get('/games/1v2')
     async comparetwogames() {
-        //const game1 = await Game.findOne(18)
-        //const board1 = game1.board
-        const game2 = await Game.findOne(22)
-        const board2 = game2.board
+        const game2 = await Game.findOne(25)
+        const board2 = game2.board              //it complains because the game2 object "could" be undefined. In this case we are using async and await to make sure it's not
         return {moves: moves(defaultBoard,board2)}
     }
 
@@ -60,26 +59,10 @@ export default class GameController {
         {
             if(moves(currentBoard,update.board) > 1)
             {
-                throw new Error("404 Bad request")
+                throw new BadRequestError("404 Bad request")
             }
         }
         if (!game) throw new NotFoundError('Cannot find game')
         return Game.merge(game, update).save()
     }
 }
-
-
-
-// @Get('/ads')
-//     async allAdvertisements() {
-//         const advertisements = await Advertisement.find()
-//         return { advertisements }
-//     }
-
-// @Post('/pages')
-// @HttpCode(201)
-// createPage(
-//   @Body() page: Page
-// ) {
-//   return page.save()
-// }

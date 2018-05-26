@@ -9,7 +9,6 @@ const defaultBoard = [
     ['o', 'o', 'o']
 ]
 
-
 @JsonController()
 export default class GameController {
 
@@ -34,7 +33,6 @@ export default class GameController {
         game.board = JSON.stringify(defaultBoard)
         return game.save()
     }
-
 }
 
 

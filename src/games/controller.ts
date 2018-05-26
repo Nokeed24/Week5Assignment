@@ -2,12 +2,6 @@
 import { JsonController, Get, Post, Put, Body, Param, HttpCode, NotFoundError, ForbiddenError, BadRequestError } from 'routing-controllers'
 import Game from './entity'
 
-const defaultBoard = [
-    ['o', 'o', 'o'],
-    ['o', 'o', 'o'],
-    ['o', 'o', 'o']
-]
-
 const colors = ["red", "blue", "green", "yellow", "magenta"]
 
 const moves = (board1, board2) => 
@@ -20,7 +14,6 @@ const moves = (board1, board2) =>
 @JsonController()
 export default class GameController {
 
-    
     assignRandomColor() {
         
         return colors[Math.floor(Math.random() * colors.length)];
@@ -32,12 +25,12 @@ export default class GameController {
         return { games }
     }
 
-    @Get('/games/1v2')
-    async comparetwogames() {
-        const game2 = await Game.findOne(54)
-        const board2 = game2.board              //it complains because the game2 object "could" be undefined. In this case we are using async and await to make sure it's not
-        return {moves: moves(defaultBoard,board2)}
-    }
+    // @Get('/games/1v2')
+    // async comparetwogames() {
+    //     const game2 = await Game.findOne(59)
+    //     const board2 = game2.board              //it complains because the game2 object "could" be undefined. In this case we are using async and await to make sure it's not
+    //     return {moves: moves(defaultBoard,board2)}
+    // }
 
     @Post('/games')
     @HttpCode(201)
@@ -63,7 +56,7 @@ export default class GameController {
         {
             if(moves(currentBoard,update.board) > 1)
             {
-                throw new BadRequestError("Too many moves, dawg")
+                throw new BadRequestError("That's not allowed! Too many moves!")
             }
         }
         return Game.merge(game, update).save()

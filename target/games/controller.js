@@ -14,11 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const entity_1 = require("./entity");
-const defaultBoard = [
-    ['o', 'o', 'o'],
-    ['o', 'o', 'o'],
-    ['o', 'o', 'o']
-];
 const colors = ["red", "blue", "green", "yellow", "magenta"];
 const moves = (board1, board2) => board1
     .map((row, y) => row.filter((cell, x) => board2[y][x] !== cell))
@@ -31,11 +26,6 @@ let GameController = class GameController {
     async allGames() {
         const games = await entity_1.default.find();
         return { games };
-    }
-    async comparetwogames() {
-        const game2 = await entity_1.default.findOne(54);
-        const board2 = game2.board;
-        return { moves: moves(defaultBoard, board2) };
     }
     createGame(game) {
         if (!game.name)
@@ -54,7 +44,7 @@ let GameController = class GameController {
             throw new routing_controllers_1.ForbiddenError('Color not permitted');
         if (update.board) {
             if (moves(currentBoard, update.board) > 1) {
-                throw new routing_controllers_1.BadRequestError("Too many moves, dawg");
+                throw new routing_controllers_1.BadRequestError("That's not allowed! Too many moves!");
             }
         }
         return entity_1.default.merge(game, update).save();
@@ -66,12 +56,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], GameController.prototype, "allGames", null);
-__decorate([
-    routing_controllers_1.Get('/games/1v2'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], GameController.prototype, "comparetwogames", null);
 __decorate([
     routing_controllers_1.Post('/games'),
     routing_controllers_1.HttpCode(201),

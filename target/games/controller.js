@@ -10,21 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
-let MainController = class MainController {
-    main() {
-        return {
-            hello: 'World'
-        };
+const entity_1 = require("./entity");
+let GameController = class GameController {
+    async allGames() {
+        const games = await entity_1.default.find();
+        return { games };
     }
 };
 __decorate([
-    routing_controllers_1.Get("/games"),
+    routing_controllers_1.Get('/games/'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], MainController.prototype, "main", null);
-MainController = __decorate([
-    routing_controllers_1.Controller()
-], MainController);
-exports.default = MainController;
+    __metadata("design:returntype", Promise)
+], GameController.prototype, "allGames", null);
+GameController = __decorate([
+    routing_controllers_1.JsonController()
+], GameController);
+exports.default = GameController;
 //# sourceMappingURL=controller.js.map

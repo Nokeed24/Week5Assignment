@@ -24,13 +24,6 @@ export default class GameController {
         return { games }
     }
 
-    // @Get('/games/1v2')
-    // async comparetwogames() {
-    //     const game2 = await Game.findOne(59)
-    //     const board2 = game2.board              //it complains because the game2 object "could" be undefined. In this case we are using async and await to make sure it's not
-    //     return {moves: moves(defaultBoard,board2)}
-    // }
-
     @Post('/games')
     @HttpCode(201)
     createGame(

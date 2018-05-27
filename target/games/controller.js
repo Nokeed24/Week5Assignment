@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const entity_1 = require("./entity");
+const class_validator_1 = require("class-validator");
 const colors = ["red", "blue", "green", "yellow", "magenta"];
 const moves = (board1, board2) => board1
     .map((row, y) => row.filter((cell, x) => board2[y][x] !== cell))
@@ -28,9 +29,17 @@ let GameController = class GameController {
         return { games };
     }
     createGame(game) {
+        game.color = this.assignRandomColor();
         if (!game.name)
             throw new routing_controllers_1.NotFoundError("Cannot create game");
-        game.color = this.assignRandomColor();
+        class_validator_1.validate(game).then(errors => {
+            if (errors.length > 0) {
+                console.log("validation failed. errors: ", errors);
+            }
+            else {
+                console.log("validation succeed");
+            }
+        });
         return game.save();
     }
     async updateGame(id, update) {
@@ -40,13 +49,20 @@ let GameController = class GameController {
         const currentBoard = game.board;
         if (update.id)
             throw new routing_controllers_1.ForbiddenError('Cannot change the id');
-        if (update.color && !colors.includes(update.color))
-            throw new routing_controllers_1.BadRequestError('Color not permitted');
         if (update.board) {
             if (moves(currentBoard, update.board) > 1) {
                 throw new routing_controllers_1.BadRequestError("That's not allowed! Too many moves!");
             }
         }
+        await class_validator_1.validate(entity_1.default.merge(game, update)).then(errors => {
+            if (errors.length > 0) {
+                console.log("validation failed. errors: ", errors);
+                throw new routing_controllers_1.BadRequestError("did not pass validation, check your data");
+            }
+            else {
+                console.log("validation succeed");
+            }
+        });
         return entity_1.default.merge(game, update).save();
     }
 };

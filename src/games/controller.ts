@@ -2,6 +2,7 @@
 import { JsonController, Get, Post, Put, Body, Param, HttpCode, NotFoundError, ForbiddenError, BadRequestError } from 'routing-controllers'
 import Game from './entity'
 import { validate } from 'class-validator'
+import {newBoard} from "./entity"
 
 const colors = ["red", "blue", "green", "yellow", "magenta"]
 
@@ -31,6 +32,7 @@ export default class GameController {
         @Body() game: Game
     ) {
         game.color = this.assignRandomColor()
+        if(game.board) game.board = newBoard
         if(!game.name) throw new NotFoundError("Cannot create game")
         validate(game).then(errors => {
             if (errors.length > 0) {
@@ -51,11 +53,6 @@ export default class GameController {
         if (!game) throw new NotFoundError('Cannot find game')
         const currentBoard = game.board
         if (update.id) throw new ForbiddenError('Cannot change the id')
-        // if (update.name)
-        // {
-        //     if (Number(update.name)!==NaN) throw new BadRequestError("Name must be a string")
-        // }
-        //if (update.color && !colors.includes(update.color)) throw new BadRequestError('Color not permitted')
         if (update.board) 
         {
             if(moves(currentBoard,update.board) > 1)

@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const BaseEntity_1 = require("typeorm/repository/BaseEntity");
 const class_validator_1 = require("class-validator");
-const newRow = ['o', 'o', 'o'];
-const newBoard = [newRow, newRow, newRow];
+exports.newRow = ['o', 'o', 'o'];
+exports.newBoard = [exports.newRow, exports.newRow, exports.newRow];
 const colors = ["red", "blue", "green", "yellow", "magenta"];
 let Game = class Game extends BaseEntity_1.BaseEntity {
 };
@@ -30,12 +30,13 @@ __decorate([
     class_validator_1.ValidateIf(o => o.color),
     class_validator_1.IsString(),
     class_validator_1.IsIn(colors),
+    class_validator_1.IsNotEmpty(),
     typeorm_1.Column('text', { nullable: false }),
     __metadata("design:type", String)
 ], Game.prototype, "color", void 0);
 __decorate([
     class_validator_1.ValidateIf(o => o.board),
-    typeorm_1.Column('json', { default: newBoard }),
+    typeorm_1.Column('json', { default: exports.newBoard }),
     __metadata("design:type", Object)
 ], Game.prototype, "board", void 0);
 Game = __decorate([

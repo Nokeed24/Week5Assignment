@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const entity_1 = require("./entity");
 const class_validator_1 = require("class-validator");
+const entity_2 = require("./entity");
 const colors = ["red", "blue", "green", "yellow", "magenta"];
 const moves = (board1, board2) => board1
     .map((row, y) => row.filter((cell, x) => board2[y][x] !== cell))
@@ -30,6 +31,8 @@ let GameController = class GameController {
     }
     createGame(game) {
         game.color = this.assignRandomColor();
+        if (game.board)
+            game.board = entity_2.newBoard;
         if (!game.name)
             throw new routing_controllers_1.NotFoundError("Cannot create game");
         class_validator_1.validate(game).then(errors => {
